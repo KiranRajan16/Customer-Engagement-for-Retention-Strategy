@@ -129,6 +129,9 @@ section[data-testid="stSidebar"] [data-baseweb="tag"] span {
     line-height:1.5;
     margin-top:5px;
     margin-bottom:5px;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
 /* Tab Description */
@@ -163,23 +166,44 @@ div.stPlotlyChart {
 }
 
 .insight-box {
+    background: #eef7ff;
+    border-left: 5px solid #2196f3;
     padding: 15px;
     border-radius: 10px;
-    background: white;
-    border-left: 5px solid #1f77b4;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    line-height: 1.6;
 }
 
 .summary-box {
     background: white;
-    padding: 20px;
+    padding: 25px;
     border-radius: 12px;
-    margin-top: 15px;
     box-shadow: 0px 2px 10px rgba(0,0,0,0.08);
-    border-left: 6px solid #750545;
+    margin-top: 15px;
+    line-height: 2;
 }
 
 .summary-box h3 {
     margin-bottom: 15px;
     color: #750545;
     font-weight: 700;
+}
+
+.graph-description {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: #444;
+    font-size: 14px;
+}
+
+.recommendation-box {
+    background: #fff8e1;
+    border-left: 5px solid #ff9800;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-weight: 500;
 }

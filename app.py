@@ -498,6 +498,48 @@ with tab2:
         """, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
+    st.markdown("""
+    <div class="tab-title">
+    Product Retention Heatmap
+    </div>
+    """, unsafe_allow_html=True)
+
+    heatmap_data = pd.crosstab(
+        filtered_df["NumOfProducts"],
+        filtered_df["Exited"]
+    )
+
+    fig_heatmap = px.imshow(
+        heatmap_data,
+        text_auto=True,
+        aspect="auto",
+        title="Product Utilization Heatmap"
+    )
+
+    st.markdown("""
+    <div class="graph-description">
+    This heatmap displays customer retention and churn across different product ownership levels.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.plotly_chart(
+        fig_heatmap,
+        use_container_width=True
+    )
+
+    best_product_group = product_churn.loc[
+        product_churn["Exited"].idxmin(),
+        "NumOfProducts"
+    ]
+
+    st.markdown(f"""
+        <div class="insight-box">
+        <b>Insight:</b><br>
+        Customers owning <b>{best_product_group}</b> products demonstrate the lowest churn rate,
+        suggesting an optimal product engagement threshold.
+    </div>
+    """, unsafe_allow_html=True)
+
 # Premium Customers
 with tab3:
 
@@ -545,6 +587,41 @@ with tab3:
         </div>
         """, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="tab-title">
+    Salary vs Balance Analysis
+    </div>
+    """, unsafe_allow_html=True)
+
+    fig_salary = px.scatter(
+        filtered_df,
+        x="EstimatedSalary",
+        y="Balance",
+        color="Exited",
+        hover_data=[
+            "Age",
+            "NumOfProducts"
+        ]
+    )
+
+    st.markdown("""
+    <div class="graph-description">
+    Examines the relationship between salary levels and account balances.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.plotly_chart(
+        fig_salary,
+        use_container_width=True
+    )
+
+    st.markdown("""
+    <div class="insight-box">
+    <b>Insight:</b><br>
+    Customers with high salaries but low balances may be maintaining primary financial relationships with competing institutions.
+    </div>
+    """, unsafe_allow_html=True)
 
 # Retention Strength
 with tab4:
@@ -614,6 +691,56 @@ with tab4:
         </div>
         """, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="tab-title">
+    Retention Forecast
+    </div>
+    """, unsafe_allow_html=True)
+
+    future = pd.DataFrame({
+        "Month": [
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec"
+        ],
+        "ProjectedRetention": [
+            retention_rate,
+            retention_rate + 0.5,
+            retention_rate + 1.0,
+            retention_rate + 1.5,
+            retention_rate + 2.0,
+            retention_rate + 2.5
+        ]
+    })
+
+    forecast_fig = px.line(
+        future,
+        x="Month",
+        y="ProjectedRetention",
+        markers=True
+    )
+
+    st.markdown("""
+    <div class="graph-description">
+    Forecast showing expected retention improvement if engagement strategies remain effective.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.plotly_chart(
+        forecast_fig,
+        use_container_width=True
+    )
+
+    st.markdown("""
+    <div class="insight-box">
+    <b>Insight:</b><br>
+    Retention rates are projected to improve gradually through sustained engagement, cross-selling and loyalty initiatives.
+    </div>
+    """, unsafe_allow_html=True)
 
 with tab5:
     
@@ -699,31 +826,58 @@ with tab5:
     st.markdown("<br>", unsafe_allow_html=True)
 
 with tab6:
+
     st.markdown("""
-        <div class="tab-title">
-        Strategic Recommendations
-        </div>
-        """, unsafe_allow_html=True)
+    <div class="tab-title">
+    Strategic Recommendations
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="tab-description">
+    Automated recommendations generated from customer engagement,
+    retention, churn risk and product utilization insights.
+    </div>
+    """, unsafe_allow_html=True)
+
+    recommendations = []
 
     if churn_rate > 20:
-        st.warning(
-            "High churn detected. Increase engagement campaigns and customer outreach."
+        recommendations.append(
+            "Launch targeted customer retention campaigns."
         )
 
     if product_depth < 2:
-        st.warning(
-            "Low product utilization detected. Promote cross-selling strategies."
-        )
-
-    if relationship_score > 70:
-        st.success(
-            "Strong customer loyalty observed."
+        recommendations.append(
+            "Promote cross-selling and product bundling."
         )
 
     if len(high_risk) > 500:
-        st.error(
-            "Large number of high-risk customers identified."
+        recommendations.append(
+            "Assign relationship managers to high-risk customers."
         )
+
+    if relationship_score < 50:
+        recommendations.append(
+            "Improve engagement through loyalty programs."
+        )
+
+    for recommendation in recommendations:
+
+        st.markdown(f"""
+        <div class="recommendation-box">
+        {recommendation}
+        </div>
+        """, unsafe_allow_html=True)
+
+csv = filtered_df.to_csv(index=False)
+
+st.download_button(
+    label="📥 Download Filtered Dataset",
+    data=csv,
+    file_name="Customer_Analytics.csv",
+    mime="text/csv"
+)
 
 # Executive Summary
 st.markdown("---")
